@@ -1,8 +1,5 @@
 <?php
 include 'function.php';
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
     $username = $_POST['username'];
     $nama = $_POST['nama'];
@@ -11,6 +8,10 @@ use PHPMailer\PHPMailer\Exception;
     $status = $_POST['status'];
     $code = md5($email.date('Y-m-d H:i:s'));
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+    
 //Load Composer's autoloader
 require './vendor/autoload.php';
 
@@ -40,7 +41,7 @@ try {
         mysqli_query($conn, "INSERT INTO akun (username, nama, email, password, status, verification_code)
         VALUES ('$username','$nama','$email', '$password', '$status', '$code')");
         
-    echo "<script>alert('registrasi berhasil, silahkan cek email untuk verifikasi akun</script>";
+    echo "<script>alert('registrasi berhasil, silahkan cek email untuk verifikasi akun');window.location='login.php'</script>";
     }
 } catch (Exception $e) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";

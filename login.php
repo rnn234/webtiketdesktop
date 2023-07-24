@@ -17,14 +17,25 @@ if (isset($_POST['submit'])) {
  
     $sql = "SELECT * FROM akun WHERE email='$email' AND password='$password'";
     $result = mysqli_query($conn, $sql);
-    if ($result->num_rows > 0) {
-        $row = mysqli_fetch_assoc($result);
-        $_SESSION['username'] = $row['username'];
-        header("Location:validasi.php");
-    } else {
-        echo "<script>alert('Email atau password Anda salah. Silahkan coba lagi!')</script>";
+    $cek = mysqli_num_rows($result); 
+    
+    if($cek > 0){
+        $verif = mysqli_fetch_assoc($result);
+        if($verif['is_verif'] == 1){
+            $_SESSION['user'] = $verif;
+            echo "<script>alert('login berhasil');window.location='validasi.php'</script>";
+        }else{
+            echo "<script>alert('harap verifikasi akun anda terlebih dahulu');window.location='login.php'</script>";
+        }
+        
+    }else{
+        echo "<script>alert('email atau password salah');window.location='login.php'</script>";
     }
+    
+    
+
 }
+
  
 // if(isset($_POST['submit'])){
 //     if(login($_POST) > 0){
