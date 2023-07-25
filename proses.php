@@ -5,8 +5,11 @@ include 'function.php';
     $nama = $_POST['nama'];
     $email = $_POST['email'];
     $password = md5($_POST['password']);
+    $cpassword = md5($_POST['password']);
     $status = $_POST['status'];
     $code = md5($email.date('Y-m-d H:i:s'));
+        
+
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -35,14 +38,43 @@ try {
     //Content
     $mail->isHTML(true);                                  //Set email format to HTML
     $mail->Subject = 'Verifikasi akun';
-    $mail->Body    = 'HI '.$nama.' Silahkan verifikasi akun kamu <a href="http://localhost/ticketing/verifikasi.php?code='.$code.'">VERIFIKASI</a>';
+    $mail->Body    = 'Hi '.$nama.' Silahkan verifikasi akun kamu <a href="http://localhost/ticketing/verifikasi.php?code='.$code.'">VERIFIKASI</a>';
+    
 
     if($mail->send()){
-        mysqli_query($conn, "INSERT INTO akun (username, nama, email, password, status, verification_code)
-        VALUES ('$username','$nama','$email', '$password', '$status', '$code')");
+        if ($password == $cpassword) {
+            $sql = "SELECT * FROM akun WHERE email='$email'";
+            $result = mysqli_query($conn, $sql);
+            if (!$result->num_rows > 0) {
+                $sql = "INSERT INTO akun (username, nama, email, password, status, verification_code)
+                VALUES ('$username','$nama','$email', '$password', '$status', '$code')";
+                $result = mysqli_query($conn, $sql);
+                if ($result) {
+                    echo "<script>alert('registrasi berhasil, silahkan cek email untuk verifikasi akun');window.location='login.php'</script>";
+                    $username = "";
+                    $nama = "";
+                    $email = "";
+                    $_POST['password'] = "";
+                    $_POST['cpassword'] = "";
+                    $status = "";
+                    
+                } else {
+                    echo "<script>alert('Woops! Terjadi kesalahan.')</script>";
+                }
+            } else {
+                echo "<script>alert('EMAIL TIDAK BISA DIDAFTAR 2 KALI.');window.location='regis.php'</script>";
+            }
+             
+        } else {
+            echo "<script>alert('Password Tidak Sesuai')</script>";
+        }
+        // mysqli_query($conn, "INSERT INTO akun (username, nama, email, password, status, verification_code)
+        // VALUES ('$username','$nama','$email', '$password', '$status', '$code')");
         
-    echo "<script>alert('registrasi berhasil, silahkan cek email untuk verifikasi akun');window.location='login.php'</script>";
+    
     }
 } catch (Exception $e) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 }
+
+$mail->Body    = 'Hi '.$nama.' Silahkan klik untuk mereset password <a href="http://localhost/ticketing/verifikasi.php?reset=$pass&key=$email">$pass</a>';

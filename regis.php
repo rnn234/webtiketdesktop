@@ -6,45 +6,11 @@ include "function.php";
  
 error_reporting(0); 
  
-if (isset($_SESSION['username'])) {
+if (isset($_SESSION['user'])) {
     header("Location: login.php");
 }
 
  
-if (isset($_POST['submit'])) {
-    $username = $_POST['username'];
-    $nama = $_POST['nama'];
-    $email = $_POST['email'];
-    $password = md5($_POST['password']);
-    $cpassword = md5($_POST['cpassword']);
-    $status = $_POST['status'];
- 
-    if ($password == $cpassword) {
-        $sql = "SELECT * FROM akun WHERE email='$email'";
-        $result = mysqli_query($conn, $sql);
-        if (!$result->num_rows > 0) {
-            $sql = "INSERT INTO akun (username, nama, email, password, status)
-            VALUES ('$username','$nama','$email', '$password', '$status')";
-            $result = mysqli_query($conn, $sql);
-            if ($result) {
-                echo "<script>alert('Selamat, registrasi berhasil!')</script>";
-                $username = "";
-                $nama = "";
-                $email = "";
-                $_POST['password'] = "";
-                $_POST['cpassword'] = "";
-                $status = "";
-            } else {
-                echo "<script>alert('Woops! Terjadi kesalahan.')</script>";
-            }
-        } else {
-            echo "<script>alert('EMAIL TIDAK BISA DIDAFTAR 2 KALI.')</script>";
-        }
-         
-    } else {
-        echo "<script>alert('Password Tidak Sesuai')</script>";
-    }
-}
 
 ?>
  
@@ -62,7 +28,7 @@ if (isset($_POST['submit'])) {
 </head>
 <body>
     <div class="container">
-        <form action="proses.php" method="POST" class="login-email">
+        <form action="proses.php" method="POST" class="login-email" autocomplete="off">
             <p class="login-text" style="font-size: 2rem; font-weight: 800;">Register</p>
 
             <div class="input-group">

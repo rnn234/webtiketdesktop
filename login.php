@@ -7,23 +7,23 @@ include 'function.php';
  
 error_reporting(0);
  
-if (isset($_SESSION['username'])) {
-    header("Location:validasi.php");
+if (isset($_SESSION['user'])) {
+    header("Location:home.php");
 }
  
 if (isset($_POST['submit'])) {
     $email = $_POST['email'];
     $password = md5($_POST['password']);
- 
     $sql = "SELECT * FROM akun WHERE email='$email' AND password='$password'";
     $result = mysqli_query($conn, $sql);
     $cek = mysqli_num_rows($result); 
     
     if($cek > 0){
         $verif = mysqli_fetch_assoc($result);
-        if($verif['is_verif'] == 1){
-            $_SESSION['user'] = $verif;
-            echo "<script>alert('login berhasil');window.location='validasi.php'</script>";
+        if($verif['is_verif'] == '1'){
+            $username = $verif['username'];
+            $_SESSION['user'] = $username;
+            echo "<script>alert('login berhasil');window.location='home.php'</script>";
         }else{
             echo "<script>alert('harap verifikasi akun anda terlebih dahulu');window.location='login.php'</script>";
         }
@@ -74,6 +74,7 @@ if (isset($_POST['submit'])) {
                 <button type="submit" name="submit" class="btn">Login</button>
             </div>
             <p class="login-register-text">Anda belum punya akun? <a href="regis.php">Register</a></p>
+            <p class="login-register-text">Lupa kata sandi? <a href="lupa.php">Lupa Sandi</a></p>
         </form>
     </div>
 </body>
